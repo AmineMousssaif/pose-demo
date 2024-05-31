@@ -93,3 +93,18 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+    }
+
+    #videoContainer {
+        flex-direction: column;
+    }
+
+    video, canvas {
+        max-width: 100%;
+    }
+}

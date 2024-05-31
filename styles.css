@@ -107,3 +107,18 @@ button:hover {
     top: 10px;
     left: 170px;
 }
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+    }
+
+    #videoContainer {
+        flex-direction: column;
+    }
+
+    video, canvas {
+        max-width: 100%;
+    }
+}
