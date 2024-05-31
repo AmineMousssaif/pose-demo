@@ -5,12 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleKeypointsButton = document.getElementById('toggleKeypoints');
     const toggleSkeletonButton = document.getElementById('toggleSkeleton');
     const startStopButton = document.getElementById('startStop');
+    const handsUpButton = document.getElementById('handsUpButton');
     const keypointsList = document.getElementById('keypointsList');
     const canvasCtx = canvasElement.getContext('2d');
     const skeletonCtx = skeletonCanvas.getContext('2d');
     let showKeypoints = false;
     let showSkeleton = false;
     let isRunning = false;
+    let handsUpDetection = false;
     let animationFrameId;
     let net;
 
@@ -69,6 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function handsUp(keypoints) {
+        const leftWrist = keypoints.find(keypoint => keypoint.part === 'leftWrist');
+        const rightWrist = keypoints.find(keypoint => keypoint.part === 'rightWrist');
+        const leftShoulder = keypoints.find(keypoint => keypoint.part === 'leftShoulder');
+        const rightShoulder = keypoints.find(keypoint => keypoint.part === 'rightShoulder');
+
+        return leftWrist.position.y < leftShoulder.position.y && rightWrist.position.y < rightShoulder.position.y;
+
+    }
+
     function updateKeypointsList(keypoints) {
         keypointsList.innerHTML = keypoints
             .map(keypoint => {
@@ -115,6 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     keypointsList.innerHTML = '';
                 }
+                if (handsUpDetection && handsUp(pose.keypoints)) {
+                    videoContainer.classList.add('hands-up');
+                } else {
+                    videoContainer.classList.remove('hands-up');
+                }
             });
 
             animationFrameId = requestAnimationFrame(poseDetectionFrame);
@@ -132,6 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
         showSkeleton = !showSkeleton;
         toggleSkeletonButton.textContent = showSkeleton ? 'Hide Skeleton' : 'Show Skeleton';
     });
+
+    handsUpButton.addEventListener('click', () => {
+        handsUpDetection = !handsUpDetection;
+        handsUpButton.textContent = handsUpDetection ? 'Disable Hands Up Detection' : 'Enable Hands Up Detection';
+    });
+
 
     startStopButton.addEventListener('click', () => {
         if (isRunning) {

@@ -10,6 +10,7 @@ const skeletonCtx = skeletonCanvas.getContext('2d');
 let showKeypoints = false;
 let isRunning = false;
 let animationFrameId;
+let handsUpDetection = false;
 
 async function setupCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -98,6 +99,13 @@ async function detectPoseInRealTime(video, net) {
         } else {
             keypointsList.innerHTML = '';
         }
+
+        if (handsUpDetection && handsUp(pose.keypoints)) {
+            videoContainer.classList.add('hands-up');
+        } else {
+            videoContainer.classList.remove('hands-up');
+        }
+
         animationFrameId = requestAnimationFrame(poseDetectionFrame);
     }
     poseDetectionFrame();
@@ -109,10 +117,7 @@ function handsUp(keypoints) {
     const leftShoulder = keypoints.find(keypoint => keypoint.part === 'leftShoulder');
     const rightShoulder = keypoints.find(keypoint => keypoint.part === 'rightShoulder');
 
-    if (leftWrist.position.y < leftShoulder.position.y && rightWrist.position.y < rightShoulder.position.y) {
-        return true;
-    }
-    return false;
+     return leftWrist.position.y < leftShoulder.position.y && rightWrist.position.y < rightShoulder.position.y;
 
 }
 
@@ -123,8 +128,8 @@ toggleButton.addEventListener('click', () => {
 });
 
 handsUpButton.addEventListener('click', () => {
-    handsUp()
-
+    handsUpDetection = !handsUpDetection;
+    handsUpButton.textContent = handsUpDetection ? 'Disable Hands Up Detection' : 'Enable Hands Up Detection';
 });
 
 startStopButton.addEventListener('click', () => {
