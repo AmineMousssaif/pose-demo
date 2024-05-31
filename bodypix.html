@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BodyPix Model - Pose Detection Demo</title>
+    <link rel="stylesheet" href="styles1.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
+</head>
+<body>
+<nav>
+    <ul>
+        <li><a class="active" href="bodypix.html">BodyPix Model</a></li>
+        <li><a href="posenet.html">PoseNet Model</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <h1>Pose Detection Demo - BodyPix</h1>
+    <div class="controls">
+        <button id="toggleKeypoints">Show Keypoints</button>
+        <button id="toggleSkeleton">Show Skeleton</button>
+        <button id="startStop">Start</button>
+    </div>
+    <div id="videoContainer">
+        <video id="videoElement" autoplay playsinline></video>
+        <canvas id="canvasElement"></canvas>
+    </div>
+    <div id="keypointsList"></div>
+</div>
+<script src="script1.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pose Classification Live Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+    <ul>
+        <li><a href="bodypix.html">BodyPix Model</a></li>
+        <li><a class="active" href="posenet.html">PoseNet Model</a></li>
+    </ul>
+</nav>
+<div class="container">
+    <h1>Pose Detection Demo - PoseNet</h1>
+    <div class="controls">
+        <button id="toggleButton">Show Keypoints</button>
+        <button id="startStopButton">Start</button>
+        <button id="handsUpButton">hands Up</button>
+    </div>
+    <div id="videoContainer">
+    <video id="videoElement" width="640" height="480" autoplay></video>
+    <canvas id="skeletonCanvas" width="640" height="480"></canvas>
+    </div>
+<div id="keypointsList"></div>
+</div>
+<script src="https://unpkg.com/@tensorflow/tfjs"></script>
+<script src="https://unpkg.com/@tensorflow-models/posenet"></script>
+<script src="script.js"></script>
+</body>
+</html>
