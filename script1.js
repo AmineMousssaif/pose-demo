@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleKeypointsButton = document.getElementById('toggleKeypoints');
     const toggleSkeletonButton = document.getElementById('toggleSkeleton');
     const startStopButton = document.getElementById('startStop');
+    const durationDisplay = document.getElementById('duration')
     const handsUpButton = document.getElementById('handsUpButton');
     const keypointsList = document.getElementById('keypointsList');
     const canvasCtx = canvasElement.getContext('2d');
@@ -13,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let showSkeleton = false;
     let isRunning = false;
     let handsUpDetection = false;
+    let armRaiseStartTime = null;
+    let armRaiseDuration = 0;
+    let isDetectingHeadRaise = false;
     let animationFrameId;
     let net;
 
@@ -80,6 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return leftWrist.position.y < leftShoulder.position.y && rightWrist.position.y < rightShoulder.position.y;
 
     }
+    function isHeadRaised(keypoints) {
+        const nose = keypoints.find(keypoint => keypoint.part === 'nose');
+        const leftShoulder = keypoints.find(keypoint => keypoint.part === 'leftShoulder');
+        const rightShoulder = keypoints.find(keypoint => keypoint.part === 'rightShoulder');
+
+        const shoulderY = (leftShoulder.position.y + rightShoulder.position.y) / 2;
+        const threshold = 150; // Increase this value to require a higher raise for detection
+        return nose.position.y < (shoulderY - threshold);
+    }
+
 
     function updateKeypointsList(keypoints) {
         keypointsList.innerHTML = keypoints
@@ -127,10 +141,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     keypointsList.innerHTML = '';
                 }
-                if (handsUpDetection && handsUp(pose.keypoints)) {
-                    videoContainer.classList.add('hands-up');
-                } else {
-                    videoContainer.classList.remove('hands-up');
+                if (handsUpDetection) {
+                    if (handsUp(pose.keypoints)) {
+                        videoContainer.classList.add('hands-up');
+                        if (armRaiseStartTime === null) {
+                            armRaiseStartTime = Date.now();
+                        }
+                        armRaiseDuration = (Date.now() - armRaiseStartTime) / 1000;
+
+                    } else {
+                        videoContainer.classList.remove('hands-up');
+                        armRaiseStartTime = null;
+                    }
+                    durationDisplay.textContent = armRaiseDuration.toFixed(2);
+                }
+                if (isDetectingHeadRaise) {
+                    if (isHeadRaised(pose.keypoints)) {
+                        videoContainer.classList.add('hands-up');
+                        if (armRaiseStartTime === null) {
+                            armRaiseStartTime = Date.now();
+                        }
+                        armRaiseDuration = (Date.now() - armRaiseStartTime) / 1000;
+
+                    } else {
+                        videoContainer.classList.remove('hands-up');
+                        armRaiseStartTime = null;
+                    }
+                    durationDisplay.textContent = armRaiseDuration.toFixed(2);
                 }
             });
 
@@ -150,9 +187,25 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleSkeletonButton.textContent = showSkeleton ? 'Hide Skeleton' : 'Show Skeleton';
     });
 
+
     handsUpButton.addEventListener('click', () => {
         handsUpDetection = !handsUpDetection;
-        handsUpButton.textContent = handsUpDetection ? 'Disable Hands Up Detection' : 'Enable Hands Up Detection';
+        handsUpButton.textContent = handsUpDetection ? 'Stop Arm Raise Detection' : 'Start Arm Raise Detection';
+        if (!handsUpDetection) {
+            armRaiseStartTime = null;
+            armRaiseDuration = 0;
+            durationDisplay.textContent = '0';
+        }
+    });
+
+    startHeadRaiseButton.addEventListener('click', () => {
+        isDetectingHeadRaise = !isDetectingHeadRaise;
+        startHeadRaiseButton.textContent = isDetectingHeadRaise ? 'Stop Head Raise Detection' : 'Start Head Raise Detection';
+        if (!isDetectingHeadRaise) {
+            armRaiseStartTime = null;
+            armRaiseDuration = 0;
+            durationDisplay.textContent = '0';
+        }
     });
 
 

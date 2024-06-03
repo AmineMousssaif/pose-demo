@@ -6,14 +6,11 @@ body {
     flex-direction: column;
     align-items: center;
 }
+
 nav {
     width: 100%;
     background-color: #333;
 }
-li {
-    float: left;
-}
-
 
 nav ul {
     list-style-type: none;
@@ -43,6 +40,15 @@ nav ul li a:hover:not(.active) {
     background-color: #04AA6D;
 }
 
+.container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.controls {
+    margin-bottom: 10px;
+}
+
 #videoContainer {
     display: flex;
     align-items: center;
@@ -56,23 +62,14 @@ nav ul li a:hover:not(.active) {
 }
 
 
-
-#videoElement, #skeletonCanvas, #canvasElement {
+video, canvas {
+    width: 640px;
+    height: 480px;
     border: 2px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 0 10px; /* Adds spacing between video and skeleton canvas */
 }
-
-.container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.controls {
-    margin-bottom: 10px;
-}
-
 
 #keypointsList {
     position: absolute;
@@ -104,16 +101,29 @@ button:hover {
     background-color: #0056b3;
 }
 
-#toggleButto {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+#timerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
 }
 
-#startStopButto {
-    position: absolute;
-    top: 10px;
-    left: 170px;
+#durationDisplay {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#duration {
+    color: #007BFF;
 }
 
 /* Mobile-specific styles */

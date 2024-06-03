@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pose Classification Live Demo</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icon.png">
+
     <script src="https://unpkg.com/@tensorflow/tfjs"></script>
     <script src="https://unpkg.com/@tensorflow-models/posenet"></script>
 </head>
@@ -16,12 +18,16 @@
 
     </ul>
 </nav>
-<div class="container">
+
+    <div class="container">
     <h1>Pose Detection Demo - PoseNet</h1>
     <div class="controls">
         <button id="toggleButton">Show Keypoints</button>
         <button id="startStopButton">Start</button>
-        <button id="handsUpButton">Hands Up</button>
+        <button id="handsUpButton">Start Arm Raise Detection</button>
+        <button id="startHeadRaiseButton">Start Head Raise Detection</button>
+        <div id="durationDisplay">Duration: <span id="duration">0</span> seconds</div>
+
     </div>
     <div id="videoContainer">
     <video id="videoElement" width="640" height="480" autoplay playsinline></video>

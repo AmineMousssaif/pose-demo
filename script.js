@@ -2,15 +2,20 @@ const videoElement = document.getElementById('videoElement');
 const canvasElement = document.getElementById('skeletonCanvas');
 const skeletonCanvas = document.getElementById('skeletonCanvas');
 const toggleButton = document.getElementById('toggleButton');
+const durationDisplay = document.getElementById('duration');
 const startStopButton = document.getElementById('startStopButton');
 const handsUpButton = document.getElementById('handsUpButton');
+const startHeadRaiseButton = document.getElementById('startHeadRaiseButton');
 const keypointsList = document.getElementById('keypointsList');
 const canvasCtx = canvasElement.getContext('2d');
 const skeletonCtx = skeletonCanvas.getContext('2d');
 let showKeypoints = false;
 let isRunning = false;
+let armRaiseStartTime = null;
+let armRaiseDuration = 0;
 let animationFrameId;
 let handsUpDetection = false;
+let isDetectingHeadRaise = false;
 
 async function setupCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -29,6 +34,9 @@ async function loadPosenet() {
     const net = await posenet.load();
     return net;
 }
+
+
+
 
 function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
     const adjacentKeyPoints = [
@@ -82,16 +90,37 @@ function updateKeypointsList(keypoints) {
         .join('');
 }
 
+function handsUp(keypoints) {
+    const leftWrist = keypoints.find(keypoint => keypoint.part === 'leftWrist');
+    const rightWrist = keypoints.find(keypoint => keypoint.part === 'rightWrist');
+    const leftShoulder = keypoints.find(keypoint => keypoint.part === 'leftShoulder');
+    const rightShoulder = keypoints.find(keypoint => keypoint.part === 'rightShoulder');
+
+    return leftWrist.position.y < leftShoulder.position.y && rightWrist.position.y < rightShoulder.position.y;
+
+}
+
+
+function isHeadRaised(keypoints) {
+    const nose = keypoints.find(keypoint => keypoint.part === 'nose');
+    const leftShoulder = keypoints.find(keypoint => keypoint.part === 'leftShoulder');
+    const rightShoulder = keypoints.find(keypoint => keypoint.part === 'rightShoulder');
+
+    const shoulderY = (leftShoulder.position.y + rightShoulder.position.y) / 2;
+    const threshold = 150; // Increase this value to require a higher raise for detection
+    return nose.position.y < (shoulderY - threshold);
+}
+
 async function detectPoseInRealTime(video, net) {
     const flipHorizontal = false;
     async function poseDetectionFrame() {
         if (!isRunning) return;
 
-        const pose = await net.estimateSinglePose(video, {
-            flipHorizontal,
-        });
+        const pose = await net.estimateSinglePose(video, {flipHorizontal,});
+
         canvasCtx.clearRect(0, 0, video.width, video.height);
         skeletonCtx.clearRect(0, 0, skeletonCanvas.width, skeletonCanvas.height);
+
         drawSkeleton(pose.keypoints, 0.5, skeletonCtx);
         if (showKeypoints) {
             drawKeypoints(pose.keypoints, 0.5, canvasCtx);
@@ -100,26 +129,41 @@ async function detectPoseInRealTime(video, net) {
             keypointsList.innerHTML = '';
         }
 
-        if (handsUpDetection && handsUp(pose.keypoints)) {
-            videoContainer.classList.add('hands-up');
-        } else {
-            videoContainer.classList.remove('hands-up');
+        if (handsUpDetection) {
+            if (handsUp(pose.keypoints)) {
+                videoContainer.classList.add('hands-up');
+                if (armRaiseStartTime === null) {
+                    armRaiseStartTime = Date.now();
+                }
+                armRaiseDuration = (Date.now() - armRaiseStartTime) / 1000;
+
+            } else {
+                videoContainer.classList.remove('hands-up');
+                armRaiseStartTime = null;
+            }
+            durationDisplay.textContent = armRaiseDuration.toFixed(2);
         }
 
+        if (isDetectingHeadRaise) {
+            if (isHeadRaised(pose.keypoints)) {
+                videoContainer.classList.add('hands-up');
+                if (armRaiseStartTime === null) {
+                    armRaiseStartTime = Date.now();
+                }
+                armRaiseDuration = (Date.now() - armRaiseStartTime) / 1000;
+
+            } else {
+                videoContainer.classList.remove('hands-up');
+                armRaiseStartTime = null;
+            }
+            durationDisplay.textContent = armRaiseDuration.toFixed(2);
+        }
         animationFrameId = requestAnimationFrame(poseDetectionFrame);
     }
     poseDetectionFrame();
 }
 
-function handsUp(keypoints) {
-    const leftWrist = keypoints.find(keypoint => keypoint.part === 'leftWrist');
-    const rightWrist = keypoints.find(keypoint => keypoint.part === 'rightWrist');
-    const leftShoulder = keypoints.find(keypoint => keypoint.part === 'leftShoulder');
-    const rightShoulder = keypoints.find(keypoint => keypoint.part === 'rightShoulder');
 
-     return leftWrist.position.y < leftShoulder.position.y && rightWrist.position.y < rightShoulder.position.y;
-
-}
 
 
 toggleButton.addEventListener('click', () => {
@@ -129,8 +173,26 @@ toggleButton.addEventListener('click', () => {
 
 handsUpButton.addEventListener('click', () => {
     handsUpDetection = !handsUpDetection;
-    handsUpButton.textContent = handsUpDetection ? 'Disable Hands Up Detection' : 'Enable Hands Up Detection';
+    handsUpButton.textContent = handsUpDetection ? 'Stop Arm Raise Detection' : 'Start Arm Raise Detection';
+    if (!handsUpDetection) {
+        armRaiseStartTime = null;
+        armRaiseDuration = 0;
+        durationDisplay.textContent = '0';
+    }
 });
+
+
+startHeadRaiseButton.addEventListener('click', () => {
+    isDetectingHeadRaise = !isDetectingHeadRaise;
+    startHeadRaiseButton.textContent = isDetectingHeadRaise ? 'Stop Head Raise Detection' : 'Start Head Raise Detection';
+    if (!isDetectingHeadRaise) {
+        armRaiseStartTime = null;
+        armRaiseDuration = 0;
+        durationDisplay.textContent = '0';
+    }
+});
+
+
 
 startStopButton.addEventListener('click', () => {
     if (isRunning) {
