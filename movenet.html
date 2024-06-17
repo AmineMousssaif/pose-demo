@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoveNet Pose Detection Demo</title>
+  <link rel="stylesheet" href="styles.css">
+<link rel="icon" href="icon.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="bodypix.html">BodyPix Model</a></li>
+    <li><a href="index.html">PoseNet Model</a></li>
+    <li><a class="active" href="movenet.html">MoveNet Model</a></li>
+  </ul>
+</nav>
+<div class="container">
+  <h1>Pose Detection Demo - MoveNet</h1>
+  <div class="controls">
+    <button id="toggleButton">Show Keypoints</button>
+    <button id="startStopButton">Start</button>
+    <button id="handsUpButton">Hands Up</button>
+    <button id="startHeadRaiseButton">Head Raise</button>
+    <div id="durationDisplay">Duration: <span id="duration">0</span> seconds</div>
+
+  </div>
+  <div id="videoContainer">
+    <video id="videoElement" width="640" height="480" autoplay playsinline></video>
+    <canvas id="skeletonCanvas" width="640" height="480"></canvas>
+  </div>
+  <div id="keypointsList"></div>
+</div>
+
+<script src="script2.js"></script>
+</body>
+</html>
