@@ -14,10 +14,10 @@ Dit project ontwikkelt een AI-gestuurde applicatie voor thuismetingen voor kinde
 Deze applicatie is ontwikkeld als een proof-of-concept voor het gebruik van AI-modellen voor pose-detectie in thuismetingen. Het project richt zich op het gebruik van eenvoudige webcams en krachtige AI-modellen om de zorgkwaliteit voor kinderen met JDM te verbeteren door frequente en nauwkeurige monitoring van spierbewegingen mogelijk te maken.
 Functies:
 
-Realtime Pose-detectie: Detecteert en visualiseert menselijke poses in realtime via de webcam (Momenteeel 2 poses).
-Gebruiksvriendelijke Interface: Eenvoudige interface geschikt voor kinderen en hun ouders.
-Hands-free Bediening: Mogelijkheid om de tool hands-free te bedienen.
-Weergave van Keypoints en Confidence Scores: Visualisatie van de gedetecteerde keypoints en hun nauwkeurigheid.
+- Realtime Pose-detectie: Detecteert en visualiseert menselijke poses in realtime via de webcam (Momenteeel 2 poses).
+- Gebruiksvriendelijke Interface: Eenvoudige interface geschikt voor kinderen en hun ouders.
+- Hands-free Bediening: Mogelijkheid om de tool hands-free te bedienen.
+- Weergave van Keypoints en Confidence Scores: Visualisatie van de gedetecteerde keypoints en hun nauwkeurigheid.
 
 
 
