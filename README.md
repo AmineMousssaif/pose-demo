@@ -38,15 +38,15 @@ Start de webserver (bijvoorbeeld met Python's ingebouwde HTTP-server):
 
     python -m http.server
 
-Open de applicatie in een webbrowser:
-Ga naar http://localhost:8000 en open index.html.
+- Open de applicatie in een webbrowser:
+- Ga naar http://localhost:8000 en open index.html.
 
 ## Gebruik
 
-Start de applicatie: Open index.html in een webbrowser.
-Schakel de webcam in: Geef de applicatie toegang tot je webcam.
-Selecteer het model: Kies tussen PoseNet en BodyPix via de interface.
-Begin met meten: Voer de oefeningen uit en bekijk de gedetecteerde poses en keypoints in realtime.
+- Start de applicatie: Open index.html in een webbrowser.
+- Schakel de webcam in: Geef de applicatie toegang tot je webcam.
+- Selecteer het model: Kies tussen PoseNet en BodyPix via de interface.
+- Begin met meten: Voer de oefeningen uit en bekijk de gedetecteerde poses en keypoints in realtime.
 
 
 
